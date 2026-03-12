@@ -1,0 +1,92 @@
+{
+  "name": "@taleland/nestjs-auth0",
+  "description": "Small NestJS helpers for working with the Auth0 SDK.",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/taleland/nestjs-auth0.git"
+  },
+  "bugs": {
+    "url": "https://github.com/taleland/nestjs-auth0/issues"
+  },
+  "homepage": "https://github.com/taleland/nestjs-auth0#readme",
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "dist/src",
+    "README.md",
+    "CHANGELOG.md",
+    "LICENSE"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/src/index.d.ts",
+      "import": "./dist/src/index.js",
+      "default": "./dist/src/index.js"
+    }
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "keywords": [
+    "auth0",
+    "nestjs",
+    "redis",
+    "memoization",
+    "throttle"
+  ],
+  "type": "module",
+  "main": "./dist/src/index.js",
+  "types": "./dist/src/index.d.ts",
+  "version": "0.0.0",
+  "scripts": {
+    "clean": "rm -rf ./dist ./tsconfig.tsbuildinfo",
+    "build": "npm run clean && npm run compile",
+    "build:watch": "tsc -b --watch",
+    "compile": "tsc -b",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "prepack": "npm run build",
+    "test": "node --test dist/test/*.test.js",
+    "release": "semantic-release",
+    "release:dry-run": "semantic-release --dry-run"
+  },
+  "dependencies": {
+    "auth0": "5.4.0",
+    "p-memoize": "^8.0.0",
+    "p-throttle": "8.0.0"
+  },
+  "peerDependencies": {
+    "@nestjs/common": "11.x",
+    "@nestjs/core": "11.x",
+    "ioredis": "^5.0.0"
+  },
+  "peerDependenciesMeta": {
+    "ioredis": {
+      "optional": true
+    }
+  },
+  "devDependencies": {
+    "@taleland/tsconfig": "^1.0.0",
+    "@nestjs/common": "^11.1.16",
+    "@nestjs/core": "^11.1.8",
+    "@nestjs/testing": "^11.1.16",
+    "@types/node": "^25.4.0",
+    "@types/sinon": "^21.0.0",
+    "eslint": "^9.39.4",
+    "ioredis": "^5.10.0",
+    "neostandard": "^0.13.0",
+    "sinon": "^21.0.2",
+    "testcontainers": "^11.12.0",
+    "typescript": "^5.9.3",
+    "@semantic-release/changelog": "^6.0.3",
+    "@semantic-release/commit-analyzer": "^13.0.1",
+    "@semantic-release/git": "^10.0.1",
+    "@semantic-release/github": "^12.0.6",
+    "@semantic-release/npm": "^13.1.5",
+    "@semantic-release/release-notes-generator": "^14.1.0",
+    "conventional-changelog-conventionalcommits": "^9.3.0",
+    "semantic-release": "^25.0.3"
+  }
+}
