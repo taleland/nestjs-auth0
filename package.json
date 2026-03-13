@@ -53,13 +53,13 @@
     "release:dry-run": "semantic-release --dry-run"
   },
   "dependencies": {
-    "auth0": "5.4.0",
     "p-memoize": "^8.0.0",
-    "p-throttle": "8.0.0"
+    "p-throttle": "^8.0.0"
   },
   "peerDependencies": {
     "@nestjs/common": "11.x",
     "@nestjs/core": "11.x",
+    "auth0": "^5.4.0",
     "ioredis": "^5.0.0"
   },
   "peerDependenciesMeta": {
