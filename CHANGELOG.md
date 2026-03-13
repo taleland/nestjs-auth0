@@ -1,3 +1,9 @@
+## [1.0.2](https://github.com/taleland/nestjs-auth0/compare/v1.0.1...v1.0.2) (2026-03-13)
+
+### Bug Fixes
+
+* optimize package metadata for npm discoverability & some ci changes ([#2](https://github.com/taleland/nestjs-auth0/issues/2)) ([07ee844](https://github.com/taleland/nestjs-auth0/commit/07ee8440eedd40ac4f53ed3a84b68da95dda94fa))
+
 ## [1.0.1](https://github.com/taleland/nestjs-auth0/compare/v1.0.0...v1.0.1) (2026-03-13)
 
 ### Bug Fixes
