@@ -30,8 +30,14 @@
     "node": ">=20"
   },
   "keywords": [
-    "auth0",
     "nestjs",
+    "auth0",
+    "nestjs-auth0",
+    "nest-auth0",
+    "nestjs-module",
+    "auth0-sdk",
+    "management-client",
+    "authentication-client",
     "redis",
     "memoization",
     "throttle"

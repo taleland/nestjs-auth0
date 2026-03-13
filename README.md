@@ -1,6 +1,8 @@
 # `@taleland/nestjs-auth0`
 
-Small NestJS helpers for working with the Auth0 SDK.
+NestJS Auth0 module for the Auth0 SDK.
+
+It provides Auth0 clients for NestJS, plus request throttling and optional Redis-backed memoization.
 
 It gives you:
 
