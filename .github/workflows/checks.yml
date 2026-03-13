@@ -3,6 +3,21 @@ name: Checks
 on: [pull_request]
 
 jobs:
+  validate-pr-title:
+    name: Validate PR title
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Ensure squash commit title is conventional
+        env:
+          PR_TITLE: ${{ github.event.pull_request.title }}
+        run: |
+          if [[ ! "$PR_TITLE" =~ ^(feat|fix|perf|refactor|revert|docs|style|test|build|ci|chore)(\([^)]+\))?(!)?:\ .+ ]]; then
+            echo "Pull request title must follow Conventional Commits."
+            echo "Examples: feat: add Auth0 caching, fix(module): handle Redis disconnect"
+            exit 1
+          fi
+
   run:
     name: Run
     runs-on: ubuntu-latest
