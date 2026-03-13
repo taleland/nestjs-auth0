@@ -12,7 +12,9 @@ jobs:
         env:
           PR_TITLE: ${{ github.event.pull_request.title }}
         run: |
-          if [[ ! "$PR_TITLE" =~ ^(feat|fix|perf|refactor|revert|docs|style|test|build|ci|chore)(\([^)]+\))?(!)?:\ .+ ]]; then
+          conventional_commit_regex='^(feat|fix|perf|refactor|revert|docs|style|test|build|ci|chore)(\([^)]+\))?(!)?: .+'
+
+          if [[ ! "$PR_TITLE" =~ $conventional_commit_regex ]]; then
             echo "Pull request title must follow Conventional Commits."
             echo "Examples: feat: add Auth0 caching, fix(module): handle Redis disconnect"
             exit 1
