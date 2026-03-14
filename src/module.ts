@@ -4,8 +4,9 @@ import type { RedisOptions } from 'ioredis';
 import { INTERNAL_NESTJS_AUTH0_SYMBOLS, NESTJS_AUTH0_SYMBOLS } from './symbols.js';
 import { auth0ManagementClientProvider } from './managment-client.js';
 import { auth0AuthenticationClientProvider } from './auth-client.js';
-import { memoizeStorageProvider } from './memoize-storage.js';
+import { memoizeStorageProvider, cacheStorageProvider } from './memoize-storage.js';
 import { RedisShutdown, redisProvider } from './redis.js';
+import { Auth0CacheService } from './cache-service.js';
 
 export type ThrottleOptions = {
   limit: number;
@@ -35,17 +36,17 @@ export interface NestjsAuth0ModuleOptions {
   throttle?: ThrottleOptions;
 }
 
+const cacheServiceProvider = {
+  provide: NESTJS_AUTH0_SYMBOLS.cacheService,
+  useClass: Auth0CacheService,
+};
+
 export class NestjsAuth0Module {
   public static register (options: NestjsAuth0ModuleOptions): DynamicModule {
     const memoizeProviders =
       options.memoize.type === 'ioredis'
-        ? [redisProvider, memoizeStorageProvider, RedisShutdown]
-        : [
-            {
-              provide: INTERNAL_NESTJS_AUTH0_SYMBOLS.memoizeStorage,
-              useValue: {} satisfies Options<any, unknown>,
-            },
-          ];
+        ? [redisProvider, memoizeStorageProvider, cacheStorageProvider, RedisShutdown]
+        : [memoizeStorageProvider, cacheStorageProvider];
 
     return {
       module: NestjsAuth0Module,
@@ -62,6 +63,7 @@ export class NestjsAuth0Module {
           }),
         },
         ...memoizeProviders,
+        cacheServiceProvider,
         auth0ManagementClientProvider,
         auth0AuthenticationClientProvider,
       ],
@@ -69,6 +71,7 @@ export class NestjsAuth0Module {
         NESTJS_AUTH0_SYMBOLS.managementClient,
         NESTJS_AUTH0_SYMBOLS.authenticationClient,
         NESTJS_AUTH0_SYMBOLS.moduleOptions,
+        NESTJS_AUTH0_SYMBOLS.cacheService,
       ],
     };
   }
