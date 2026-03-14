@@ -3,6 +3,7 @@ import { type Options } from 'p-memoize';
 import {
   createRedisMemoizeCache,
 } from './ioredis-memoize-adapter.js';
+import { createKeyvMemoizeCache } from './keyv-memoize-adapter.js';
 import type { Redis } from 'ioredis';
 import type { MemoizeOptions, NestjsAuth0ModuleOptions } from './module.js';
 import { INTERNAL_NESTJS_AUTH0_SYMBOLS } from './symbols.js';
@@ -13,6 +14,12 @@ const resolveMemoizeOptions = (
 ): Options<any, unknown> => {
   if (memoize.type === 'in-memory') {
     return {};
+  }
+
+  if (memoize.type === 'keyv') {
+    return {
+      cache: createKeyvMemoizeCache(memoize.store),
+    };
   }
 
   if (!redis) {

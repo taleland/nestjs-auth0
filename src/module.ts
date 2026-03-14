@@ -1,6 +1,7 @@
 import { DynamicModule } from '@nestjs/common';
 import type { Options } from 'p-memoize';
 import type { RedisOptions } from 'ioredis';
+import type Keyv from 'keyv';
 import { INTERNAL_NESTJS_AUTH0_SYMBOLS, NESTJS_AUTH0_SYMBOLS } from './symbols.js';
 import { auth0ManagementClientProvider } from './managment-client.js';
 import { auth0AuthenticationClientProvider } from './auth-client.js';
@@ -25,6 +26,11 @@ export type MemoizeOptions =
     redisOptions: RedisOptions;
     ttlMilliseconds?: number;
     predicate?: MemoizePathPredicate;
+  }
+  | {
+    type: 'keyv';
+    store: Keyv;
+    predicate?: MemoizePathPredicate;
   };
 
 export interface NestjsAuth0ModuleOptions {
@@ -41,10 +47,7 @@ export class NestjsAuth0Module {
       options.memoize.type === 'ioredis'
         ? [redisProvider, memoizeStorageProvider, RedisShutdown]
         : [
-            {
-              provide: INTERNAL_NESTJS_AUTH0_SYMBOLS.memoizeStorage,
-              useValue: {} satisfies Options<any, unknown>,
-            },
+            memoizeStorageProvider,
           ];
 
     return {
