@@ -2,7 +2,7 @@ import { DynamicModule } from '@nestjs/common';
 import type { Options } from 'p-memoize';
 import type { RedisOptions } from 'ioredis';
 import { INTERNAL_NESTJS_AUTH0_SYMBOLS, NESTJS_AUTH0_SYMBOLS } from './symbols.js';
-import { auth0ManagementClientProvider } from './managment-client.js';
+import { auth0ManagementClientProvider } from './management-client.js';
 import { auth0AuthenticationClientProvider } from './auth-client.js';
 import { memoizeStorageProvider } from './memoize-storage.js';
 import { RedisShutdown, redisProvider } from './redis.js';
