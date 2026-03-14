@@ -1,4 +1,4 @@
-import { DynamicModule } from '@nestjs/common';
+import { DynamicModule, FactoryProvider, ModuleMetadata } from '@nestjs/common';
 import type { Options } from 'p-memoize';
 import type { RedisOptions } from 'ioredis';
 import { INTERNAL_NESTJS_AUTH0_SYMBOLS, NESTJS_AUTH0_SYMBOLS } from './symbols.js';
@@ -35,6 +35,23 @@ export interface NestjsAuth0ModuleOptions {
   throttle?: ThrottleOptions;
 }
 
+export interface NestjsAuth0ModuleAsyncOptions extends Pick<ModuleMetadata, 'imports'> {
+  useFactory: (...args: unknown[]) => Promise<NestjsAuth0ModuleOptions> | NestjsAuth0ModuleOptions;
+  inject?: FactoryProvider['inject'];
+}
+
+const withDefaults = (options: NestjsAuth0ModuleOptions): Readonly<NestjsAuth0ModuleOptions> =>
+  Object.freeze({
+    ...options,
+    throttle: options.throttle ?? { limit: 10, interval: 1000 },
+  });
+
+const MODULE_EXPORTS = [
+  NESTJS_AUTH0_SYMBOLS.managementClient,
+  NESTJS_AUTH0_SYMBOLS.authenticationClient,
+  NESTJS_AUTH0_SYMBOLS.moduleOptions,
+];
+
 export class NestjsAuth0Module {
   public static register (options: NestjsAuth0ModuleOptions): DynamicModule {
     const memoizeProviders =
@@ -53,23 +70,40 @@ export class NestjsAuth0Module {
       providers: [
         {
           provide: NESTJS_AUTH0_SYMBOLS.moduleOptions,
-          useValue: Object.freeze({
-            ...options,
-            throttle: options.throttle ?? {
-              limit: 10,
-              interval: 1000,
-            },
-          }),
+          useValue: withDefaults(options),
         },
         ...memoizeProviders,
         auth0ManagementClientProvider,
         auth0AuthenticationClientProvider,
       ],
-      exports: [
-        NESTJS_AUTH0_SYMBOLS.managementClient,
-        NESTJS_AUTH0_SYMBOLS.authenticationClient,
-        NESTJS_AUTH0_SYMBOLS.moduleOptions,
+      exports: MODULE_EXPORTS,
+    };
+  }
+
+  public static registerAsync (asyncOptions: NestjsAuth0ModuleAsyncOptions): DynamicModule {
+    const optionsProvider: FactoryProvider = {
+      provide: NESTJS_AUTH0_SYMBOLS.moduleOptions,
+      useFactory: async (...args: unknown[]) => {
+        const options = await asyncOptions.useFactory(...args);
+
+        return withDefaults(options);
+      },
+      inject: asyncOptions.inject ?? [],
+    };
+
+    return {
+      module: NestjsAuth0Module,
+      global: true,
+      imports: asyncOptions.imports ?? [],
+      providers: [
+        optionsProvider,
+        redisProvider,
+        memoizeStorageProvider,
+        RedisShutdown,
+        auth0ManagementClientProvider,
+        auth0AuthenticationClientProvider,
       ],
+      exports: MODULE_EXPORTS,
     };
   }
 }
