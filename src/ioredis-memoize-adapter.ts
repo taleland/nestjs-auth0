@@ -1,5 +1,6 @@
 import type { Redis } from 'ioredis';
 import type { CacheStorage } from 'p-memoize';
+import type { Auth0CacheMetrics } from './metrics.js';
 
 const REDIS_MEMOIZE_KEY_PREFIX = 'nestjs-auth0:memoize:';
 const SERIALIZED_UNDEFINED_MARKER = JSON.stringify({
@@ -45,12 +46,16 @@ const deleteKeysByPattern = async (
 export const createRedisMemoizeCache = (
   redis: Redis,
   ttlMilliseconds?: number,
-  keyPrefix = REDIS_MEMOIZE_KEY_PREFIX
+  keyPrefix = REDIS_MEMOIZE_KEY_PREFIX,
+  metrics?: Auth0CacheMetrics
 ): CacheStorage<any, unknown> => {
   return {
     has: async (key) => {
       const exists = await redis.exists(buildRedisMemoizeKey(keyPrefix, key));
-      return exists === 1;
+      const hit = exists === 1;
+
+      metrics?.record(hit ? 'hit' : 'miss', key);
+      return hit;
     },
     get: async (key) => {
       const value = await redis.get(buildRedisMemoizeKey(keyPrefix, key));
@@ -60,6 +65,8 @@ export const createRedisMemoizeCache = (
       const serializedValue = serializeCacheValue(value);
       const redisKey = buildRedisMemoizeKey(keyPrefix, key);
 
+      metrics?.record('set', key);
+
       if (ttlMilliseconds !== undefined) {
         await redis.set(redisKey, serializedValue, 'PX', ttlMilliseconds);
         return;
@@ -68,9 +75,11 @@ export const createRedisMemoizeCache = (
       await redis.set(redisKey, serializedValue);
     },
     delete: async (key) => {
+      metrics?.record('invalidate', key);
       await redis.del(buildRedisMemoizeKey(keyPrefix, key));
     },
     clear: async () => {
+      metrics?.record('invalidate', '*');
       await deleteKeysByPattern(
         redis,
         `${keyPrefix}*`

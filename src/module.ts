@@ -6,6 +6,7 @@ import { auth0ManagementClientProvider } from './managment-client.js';
 import { auth0AuthenticationClientProvider } from './auth-client.js';
 import { memoizeStorageProvider } from './memoize-storage.js';
 import { RedisShutdown, redisProvider } from './redis.js';
+import { Auth0CacheMetrics } from './metrics.js';
 
 export type ThrottleOptions = {
   limit: number;
@@ -33,7 +34,13 @@ export interface NestjsAuth0ModuleOptions {
   clientSecret: string;
   memoize: MemoizeOptions;
   throttle?: ThrottleOptions;
+  metrics?: boolean;
 }
+
+const metricsProvider = {
+  provide: NESTJS_AUTH0_SYMBOLS.cacheMetrics,
+  useClass: Auth0CacheMetrics,
+};
 
 export class NestjsAuth0Module {
   public static register (options: NestjsAuth0ModuleOptions): DynamicModule {
@@ -46,6 +53,8 @@ export class NestjsAuth0Module {
               useValue: {} satisfies Options<any, unknown>,
             },
           ];
+
+    const extraProviders = options.metrics ? [metricsProvider] : [];
 
     return {
       module: NestjsAuth0Module,
@@ -62,6 +71,7 @@ export class NestjsAuth0Module {
           }),
         },
         ...memoizeProviders,
+        ...extraProviders,
         auth0ManagementClientProvider,
         auth0AuthenticationClientProvider,
       ],
@@ -69,6 +79,7 @@ export class NestjsAuth0Module {
         NESTJS_AUTH0_SYMBOLS.managementClient,
         NESTJS_AUTH0_SYMBOLS.authenticationClient,
         NESTJS_AUTH0_SYMBOLS.moduleOptions,
+        ...(options.metrics ? [NESTJS_AUTH0_SYMBOLS.cacheMetrics] : []),
       ],
     };
   }
