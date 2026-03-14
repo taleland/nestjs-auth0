@@ -6,6 +6,7 @@ import { auth0ManagementClientProvider } from './managment-client.js';
 import { auth0AuthenticationClientProvider } from './auth-client.js';
 import { memoizeStorageProvider } from './memoize-storage.js';
 import { RedisShutdown, redisProvider } from './redis.js';
+import { validateModuleOptions } from './validate-options.js';
 
 export type ThrottleOptions = {
   limit: number;
@@ -37,6 +38,8 @@ export interface NestjsAuth0ModuleOptions {
 
 export class NestjsAuth0Module {
   public static register (options: NestjsAuth0ModuleOptions): DynamicModule {
+    validateModuleOptions(options);
+
     const memoizeProviders =
       options.memoize.type === 'ioredis'
         ? [redisProvider, memoizeStorageProvider, RedisShutdown]
