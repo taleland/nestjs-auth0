@@ -27,12 +27,18 @@ export type MemoizeOptions =
     predicate?: MemoizePathPredicate;
   };
 
+export type RetryOptions = {
+  retries: number;
+  shouldRetry?: (error: unknown) => boolean;
+};
+
 export interface NestjsAuth0ModuleOptions {
   domain: string;
   clientId: string;
   clientSecret: string;
   memoize: MemoizeOptions;
   throttle?: ThrottleOptions;
+  retry?: RetryOptions;
 }
 
 export class NestjsAuth0Module {

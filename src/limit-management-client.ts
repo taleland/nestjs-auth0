@@ -1,6 +1,7 @@
 import pMemoize, { type Options } from 'p-memoize';
 import pThrottle from 'p-throttle';
-import type { MemoizePathPredicate, ThrottleOptions } from './module.js';
+import pRetry from 'p-retry';
+import type { MemoizePathPredicate, RetryOptions, ThrottleOptions } from './module.js';
 
 const isPromiseLike = (value: unknown): value is Promise<unknown> => {
   return typeof value === 'object' && value !== null && 'then' in value;
@@ -123,18 +124,40 @@ export const limitManagementClient = <T extends object>(
   options: {
     throttle?: ThrottleOptions;
     memoize?: LimitedClientMemoizeOptions | false;
+    retry?: RetryOptions;
   } = {}
 ): T => {
+  const retryWrapper = options.retry
+    ? <TFn extends (...args: unknown[]) => Promise<unknown>>(fn: TFn): TFn => {
+        const { retries, shouldRetry } = options.retry!;
+
+        return ((...args: unknown[]) =>
+          pRetry(() => fn(...args), {
+            retries,
+            shouldRetry: shouldRetry
+              ? (error) => shouldRetry(error)
+              : undefined,
+          })) as TFn;
+      }
+    : null;
+
   const throttle = pThrottle(options.throttle ?? {
     limit: 10,
     interval: 1000,
   });
+
+  const wrappedThrottle = retryWrapper
+    ? <TFn extends (...args: unknown[]) => Promise<unknown>>(fn: TFn): ReturnType<typeof pThrottle<TFn>> => {
+        return throttle(retryWrapper(fn));
+      }
+    : throttle;
+
   const proxiedObjects = new WeakMap<object, object>();
   const proxiedFunctions = new WeakMap<object, Map<PropertyKey, Function>>();
 
   return createLimitedProxy(
     managementClient,
-    throttle,
+    wrappedThrottle as ReturnType<typeof pThrottle>,
     options.memoize,
     [],
     proxiedObjects,

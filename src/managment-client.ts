@@ -25,6 +25,7 @@ export const auth0ManagementClientProvider: Provider = {
           ...memoizeStorage,
           predicate: options.memoize.predicate,
         } satisfies LimitedClientMemoizeOptions,
+        retry: options.retry,
       }
     );
   },
