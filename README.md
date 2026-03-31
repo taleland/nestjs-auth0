@@ -42,6 +42,7 @@ import {NestjsAuth0Module} from '@taleland/nestjs-auth0';
 			clientSecret: process.env.AUTH0_CLIENT_SECRET!,
 			memoize: {
 				type: 'in-memory',
+				predicate: (path) => path.join('.') === 'users.get',
 			},
 		}),
 	],
@@ -136,19 +137,12 @@ NestjsAuth0Module.register({
 	clientSecret: process.env.AUTH0_CLIENT_SECRET!,
 	memoize: {
 		type: 'in-memory',
+		predicate: (path) => path.join('.') === 'users.get',
 	},
 });
 ```
 
-By default, memoization is only applied to methods whose final path segment is one of:
-
-- `get`
-- `getAll`
-- `list`
-- `listAll`
-- `search`
-
-This keeps write operations such as `create`, `update`, and `delete` from being cached accidentally.
+`memoize.predicate` is required and decides which nested management client methods are cached.
 
 ### Redis memoization
 
@@ -167,6 +161,7 @@ NestjsAuth0Module.register({
 			password: process.env.REDIS_PASSWORD,
 		},
 		ttlMilliseconds: 60_000,
+		predicate: (path) => path.join('.') === 'users.get',
 	},
 });
 ```
@@ -181,7 +176,7 @@ When `memoize.type === 'in-memory'`, no Redis provider is created and `ioredis` 
 
 ### Custom memoization predicate
 
-If you need to override the default read-only allowlist, provide `memoize.predicate`.
+Provide `memoize.predicate` to opt specific nested method paths into memoization.
 
 ```ts
 NestjsAuth0Module.register({
