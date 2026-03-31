@@ -6,23 +6,9 @@ const isPromiseLike = (value: unknown): value is Promise<unknown> => {
   return typeof value === 'object' && value !== null && 'then' in value;
 };
 
-const DEFAULT_MEMOIZED_METHODS = new Set([
-  'get',
-  'getAll',
-  'list',
-  'listAll',
-  'search',
-]);
-
 export type LimitedClientMemoizeOptions = Options<any, unknown> & {
   enabled?: boolean;
-  predicate?: MemoizePathPredicate;
-};
-
-export const defaultMemoizePredicate: MemoizePathPredicate = (path) => {
-  const method = path[path.length - 1];
-
-  return typeof method === 'string' && DEFAULT_MEMOIZED_METHODS.has(method);
+  predicate: MemoizePathPredicate;
 };
 
 const shouldMemoizePath = (
@@ -33,7 +19,7 @@ const shouldMemoizePath = (
     return false;
   }
 
-  return memoize.predicate?.(path) ?? defaultMemoizePredicate(path);
+  return memoize.predicate(path);
 };
 
 const createLimitedProxy = <T extends object>(

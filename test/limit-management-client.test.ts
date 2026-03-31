@@ -17,6 +17,9 @@ import {
 
 registerTestHooks();
 
+const isUsersGetPath = (path: readonly string[]) => path.join('.') === 'users.get';
+const isUsersCreatePath = (path: readonly string[]) => path.join('.') === 'users.create';
+
 const buildUsersGetStub = (
   sandbox: sinon.SinonSandbox
 ): SinonStub<[string], Promise<{ id: string; callCount: number }>> => {
@@ -147,6 +150,7 @@ test('NestjsAuth0Module memoizes repeated calls with in-memory storage', async (
     buildModuleOptions({
       memoize: {
         type: 'in-memory',
+        predicate: isUsersGetPath,
       },
     }),
     buildFakeClient(usersGet)
@@ -169,6 +173,7 @@ test('NestjsAuth0Module memoizes repeated calls with in-memory storage', async (
     buildModuleOptions({
       memoize: {
         type: 'in-memory',
+        predicate: isUsersGetPath,
       },
     }),
     buildFakeClient(usersGet)
@@ -183,7 +188,7 @@ test('NestjsAuth0Module memoizes repeated calls with in-memory storage', async (
   assert.ok(usersGet.calledTwice);
 });
 
-test('limitManagementClient does not memoize write methods by default', async (t) => {
+test('limitManagementClient only memoizes paths allowed by predicate', async (t) => {
   const sandbox = sinon.createSandbox();
   const usersCreate = buildUsersCreateStub(sandbox);
   const limitedClient = limitManagementClient({
@@ -191,7 +196,9 @@ test('limitManagementClient does not memoize write methods by default', async (t
       create: usersCreate,
     },
   }, {
-    memoize: {},
+    memoize: {
+      predicate: isUsersGetPath,
+    },
   });
   const payload = {
     email: 'memoize-write@example.com',
@@ -217,7 +224,7 @@ test('NestjsAuth0Module accepts a memoize predicate for custom paths', async (t)
     buildModuleOptions({
       memoize: {
         type: 'in-memory',
-        predicate: (path) => path.join('.') === 'users.create',
+        predicate: isUsersCreatePath,
       },
     }),
     {
@@ -255,6 +262,7 @@ test('NestjsAuth0Module memoizes repeated calls with ioredis storage', async (t)
         type: 'ioredis',
         redisOptions,
         ttlMilliseconds: 60_000,
+        predicate: isUsersGetPath,
       },
     }),
     buildFakeClient(firstUsersGet)
@@ -286,6 +294,7 @@ test('NestjsAuth0Module memoizes repeated calls with ioredis storage', async (t)
         type: 'ioredis',
         redisOptions,
         ttlMilliseconds: 60_000,
+        predicate: isUsersGetPath,
       },
     }),
     buildFakeClient(secondUsersGet)

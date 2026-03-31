@@ -18,13 +18,13 @@ export type MemoizePathPredicate = (path: MemoizePath) => boolean;
 export type MemoizeOptions =
   | {
     type: 'in-memory';
-    predicate?: MemoizePathPredicate;
+    predicate: MemoizePathPredicate;
   }
   | {
     type: 'ioredis';
     redisOptions: RedisOptions;
     ttlMilliseconds?: number;
-    predicate?: MemoizePathPredicate;
+    predicate: MemoizePathPredicate;
   };
 
 export interface NestjsAuth0ModuleOptions {
