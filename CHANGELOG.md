@@ -1,3 +1,15 @@
+## [2.0.0](https://github.com/taleland/nestjs-auth0/compare/v1.1.0...v2.0.0) (2026-03-31)
+
+### ⚠ BREAKING CHANGES
+
+* Now predicate is required option
+
+Signed-off-by: Egor Andrianov <talentumtuum@pm.me>
+
+### Features
+
+* required predicate ([#17](https://github.com/taleland/nestjs-auth0/issues/17)) ([a64af6b](https://github.com/taleland/nestjs-auth0/commit/a64af6b29257d125cd7f7882dcc11305536b009f))
+
 ## [1.1.0](https://github.com/taleland/nestjs-auth0/compare/v1.0.2...v1.1.0) (2026-03-31)
 
 ### Features
