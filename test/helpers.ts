@@ -29,7 +29,7 @@ export const buildRedisOptions = (
 });
 
 export const buildModuleOptions = (
-  options: Pick<NestjsAuth0ModuleOptions, 'memoize'>
+  options: Partial<Pick<NestjsAuth0ModuleOptions, 'memoize'>>
 ): NestjsAuth0ModuleOptions => ({
   domain: 'test.auth0.com',
   clientId: 'test-client-id',
@@ -52,10 +52,14 @@ export const createTestingModule = async (
   return {
     moduleRef,
     limitedClient: limitManagementClient(fakeClient, {
-      memoize: {
-        ...memoizeStorage,
-        predicate: options.memoize.predicate,
-      },
+      ...(options.memoize
+        ? {
+            memoize: {
+              ...memoizeStorage,
+              predicate: options.memoize.predicate,
+            },
+          }
+        : {}),
     }),
   };
 };

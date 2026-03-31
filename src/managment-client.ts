@@ -21,10 +21,14 @@ export const auth0ManagementClientProvider: Provider = {
       managementClient,
       {
         throttle: options.throttle,
-        memoize: {
-          ...memoizeStorage,
-          predicate: options.memoize.predicate,
-        } satisfies LimitedClientMemoizeOptions,
+        ...(options.memoize
+          ? {
+              memoize: {
+                ...memoizeStorage,
+                predicate: options.memoize.predicate,
+              } satisfies LimitedClientMemoizeOptions,
+            }
+          : {}),
       }
     );
   },

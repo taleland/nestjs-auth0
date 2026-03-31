@@ -2,13 +2,13 @@
 
 NestJS Auth0 module for the Auth0 SDK.
 
-It provides Auth0 clients for NestJS, plus request throttling and optional Redis-backed memoization.
+It provides Auth0 clients for NestJS, plus request throttling and optional memoization with in-memory or Redis-backed storage.
 
 It gives you:
 
 - a global Nest module that wires `ManagementClient` and `AuthenticationClient`
 - request throttling for the Auth0 management client
-- memoization for safe read methods with either in-memory storage or Redis
+- optional memoization for safe read methods with either in-memory storage or Redis
 - automatic Redis disconnect on Nest application shutdown
 - small helpers for paginated Auth0 SDK methods
 
@@ -50,6 +50,8 @@ export class AppModule {}
 ```
 
 `NestjsAuth0Module` is global, so you only need to register it once.
+
+`memoize` is optional. If you omit it, the management client will still be throttled, but no responses will be cached.
 
 ## Features
 

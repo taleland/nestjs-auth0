@@ -31,14 +31,15 @@ export interface NestjsAuth0ModuleOptions {
   domain: string;
   clientId: string;
   clientSecret: string;
-  memoize: MemoizeOptions;
+  memoize?: MemoizeOptions;
   throttle?: ThrottleOptions;
 }
 
 export class NestjsAuth0Module {
   public static register (options: NestjsAuth0ModuleOptions): DynamicModule {
+    const memoize = options.memoize;
     const memoizeProviders =
-      options.memoize.type === 'ioredis'
+      memoize?.type === 'ioredis'
         ? [redisProvider, memoizeStorageProvider, RedisShutdown]
         : [
             {
