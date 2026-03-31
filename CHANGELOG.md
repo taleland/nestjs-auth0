@@ -1,3 +1,9 @@
+## [1.1.0](https://github.com/taleland/nestjs-auth0/compare/v1.0.2...v1.1.0) (2026-03-31)
+
+### Features
+
+* optional memoization ([#16](https://github.com/taleland/nestjs-auth0/issues/16)) ([654052e](https://github.com/taleland/nestjs-auth0/commit/654052e3ff44bfba061f6254b1e363c70e2e39e2))
+
 ## [1.0.2](https://github.com/taleland/nestjs-auth0/compare/v1.0.1...v1.0.2) (2026-03-13)
 
 ### Bug Fixes
