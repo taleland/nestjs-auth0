@@ -26,8 +26,8 @@ export const defaultMemoizePredicate: MemoizePathPredicate = (path) => {
 };
 
 const shouldMemoizePath = (
-  memoize: LimitedClientMemoizeOptions | false | undefined,
-  path: readonly string[]
+  path: readonly string[],
+  memoize?: LimitedClientMemoizeOptions
 ): memoize is LimitedClientMemoizeOptions => {
   if (!memoize || memoize.enabled === false) {
     return false;
@@ -39,7 +39,7 @@ const shouldMemoizePath = (
 const createLimitedProxy = <T extends object>(
   target: T,
   throttle: ReturnType<typeof pThrottle>,
-  memoize: LimitedClientMemoizeOptions | false | undefined,
+  memoize: LimitedClientMemoizeOptions | undefined,
   path: string[],
   proxiedObjects: WeakMap<object, object>,
   proxiedFunctions: WeakMap<object, Map<PropertyKey, Function>>
@@ -84,7 +84,7 @@ const createLimitedProxy = <T extends object>(
           return result;
         });
 
-        const wrappedFunction = shouldMemoizePath(memoize, functionPath)
+        const wrappedFunction = shouldMemoizePath(functionPath, memoize)
           ? pMemoize(execute, {
             ...memoize,
             cacheKey: (args) => JSON.stringify({
@@ -122,7 +122,7 @@ export const limitManagementClient = <T extends object>(
   managementClient: T,
   options: {
     throttle?: ThrottleOptions;
-    memoize?: LimitedClientMemoizeOptions | false;
+    memoize?: LimitedClientMemoizeOptions;
   } = {}
 ): T => {
   const throttle = pThrottle(options.throttle ?? {

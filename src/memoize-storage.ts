@@ -8,9 +8,13 @@ import type { MemoizeOptions, NestjsAuth0ModuleOptions } from './module.js';
 import { INTERNAL_NESTJS_AUTH0_SYMBOLS } from './symbols.js';
 
 const resolveMemoizeOptions = (
-  memoize: MemoizeOptions,
+  memoize?: MemoizeOptions,
   redis?: Redis
 ): Options<any, unknown> => {
+  if (!memoize) {
+    return {};
+  }
+
   if (memoize.type === 'in-memory') {
     return {};
   }

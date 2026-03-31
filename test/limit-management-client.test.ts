@@ -117,6 +117,29 @@ test('limitManagementClient does not memoize when memoize is omitted', async (t)
   assert.ok(usersGet.secondCall.calledWithExactly(userId));
 });
 
+test('NestjsAuth0Module works when memoize is omitted', async (t) => {
+  const sandbox = sinon.createSandbox();
+  const usersGet = buildUsersGetStub(sandbox);
+  const { moduleRef, limitedClient } = await createTestingModule(
+    buildModuleOptions({}),
+    buildFakeClient(usersGet)
+  );
+  const userId = randomUUID();
+
+  t.after(async () => {
+    sandbox.restore();
+    await moduleRef.close();
+  });
+
+  const first = await limitedClient.users.get(userId);
+  const second = await limitedClient.users.get(userId);
+
+  assert.notDeepStrictEqual(first, second);
+  assert.equal(usersGet.callCount, 2);
+  assert.ok(usersGet.firstCall.calledWithExactly(userId));
+  assert.ok(usersGet.secondCall.calledWithExactly(userId));
+});
+
 test('NestjsAuth0Module memoizes repeated calls with in-memory storage', async (t) => {
   const sandbox = sinon.createSandbox();
   const usersGet = buildUsersGetStub(sandbox);
