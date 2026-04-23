@@ -80,7 +80,7 @@
     "@nestjs/testing": "^11.1.16",
     "@types/node": "^25.4.0",
     "@types/sinon": "^21.0.0",
-    "eslint": "^9.39.4",
+    "eslint": "^10.2.1",
     "ioredis": "^5.10.0",
     "neostandard": "^0.13.0",
     "sinon": "^21.0.2",
