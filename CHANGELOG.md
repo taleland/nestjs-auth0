@@ -1,3 +1,13 @@
+## [3.0.0](https://github.com/taleland/nestjs-auth0/compare/v2.0.0...v3.0.0) (2026-10-27)
+
+### ⚠ BREAKING CHANGES
+
+* drain is no longer exported. Consumers must implement pagination themselves or use the Auth0 SDK pagination facilities.
+
+### Code Refactoring
+
+* remove drain helper and require conventional commits ([#58](https://github.com/taleland/nestjs-auth0/issues/58)) ([2e3cebd](https://github.com/taleland/nestjs-auth0/commit/2e3cebd507c581555d046eca54cecb8e4d4a4c1d))
+
 ## [2.0.0](https://github.com/taleland/nestjs-auth0/compare/v1.1.0...v2.0.0) (2026-03-31)
 
 ### ⚠ BREAKING CHANGES
