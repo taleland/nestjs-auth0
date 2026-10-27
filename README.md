@@ -218,29 +218,6 @@ NestjsAuth0Module.register({
 });
 ```
 
-## Helpers
-
-### `drain()`
-
-`drain()` is a small helper for Auth0-style paginated methods that return `{data}` and accept `{page, per_page}`.
-
-```ts
-import {drain} from '@taleland/nestjs-auth0';
-
-const roles = await drain((params) =>
-	managementClient.users.roles.list(userId, params),
-);
-```
-
-You can also override `perPage`:
-
-```ts
-const permissions = await drain(
-	(params) => managementClient.roles.permissions.list(roleId, params),
-	{perPage: 50},
-);
-```
-
 ## Tokens
 
 Available DI tokens:
