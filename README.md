@@ -232,15 +232,6 @@ const roles = await drain((params) =>
 );
 ```
 
-You can also override `perPage`:
-
-```ts
-const permissions = await drain(
-	(params) => managementClient.roles.permissions.list(roleId, params),
-	{perPage: 50},
-);
-```
-
 ## Tokens
 
 Available DI tokens:
