@@ -2,6 +2,9 @@ name: Checks
 
 on: [pull_request]
 
+permissions:
+  contents: read
+
 jobs:
   validate-pr-title:
     name: Validate PR title
@@ -45,3 +48,31 @@ jobs:
 
       - name: Test
         run: npm test
+
+  dependabot-auto-merge:
+    name: Dependabot auto-merge
+    needs: [validate-pr-title, run]
+    if: >-
+      github.event.pull_request.user.login == 'dependabot[bot]' &&
+      github.event.pull_request.head.repo.full_name == github.repository &&
+      github.base_ref == 'main' &&
+      !github.event.pull_request.draft
+    runs-on: ubuntu-latest
+    permissions:
+      actions: write
+      contents: write
+      pull-requests: write
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - name: Merge verified Dependabot commit
+        env:
+          PR_URL: ${{ github.event.pull_request.html_url }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: gh pr merge --squash --match-head-commit "$HEAD_SHA" "$PR_URL"
+
+      # Merges made with GITHUB_TOKEN do not trigger push/closed workflows.
+      - name: Dispatch package release
+        env:
+          BASE_REF: ${{ github.base_ref }}
+        run: gh workflow run publish.yml --repo "$GITHUB_REPOSITORY" --ref "$BASE_REF"
