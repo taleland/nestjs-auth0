@@ -59,7 +59,7 @@
     "release:dry-run": "semantic-release --dry-run"
   },
   "dependencies": {
-    "p-memoize": "^8.0.0",
+    "p-memoize": "^9.0.0",
     "p-throttle": "^8.0.0"
   },
   "peerDependencies": {
