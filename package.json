@@ -75,7 +75,7 @@
   },
   "devDependencies": {
     "@taleland/tsconfig": "^1.0.0",
-    "@nestjs/common": "^11.1.16",
+    "@nestjs/common": "^12.2.0",
     "@nestjs/core": "^11.1.8",
     "@nestjs/testing": "^11.1.16",
     "@types/node": "^26.6.5",
