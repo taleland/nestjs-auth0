@@ -77,7 +77,7 @@
     "@taleland/tsconfig": "^1.0.0",
     "@nestjs/common": "^11.1.16",
     "@nestjs/core": "^11.1.8",
-    "@nestjs/testing": "^11.1.16",
+    "@nestjs/testing": "^12.2.0",
     "@types/node": "^26.6.5",
     "@types/sinon": "^22.0.2",
     "eslint": "^10.4.0",
