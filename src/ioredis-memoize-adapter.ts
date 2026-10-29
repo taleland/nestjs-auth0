@@ -46,7 +46,7 @@ export const createRedisMemoizeCache = (
   redis: Redis,
   ttlMilliseconds?: number,
   keyPrefix = REDIS_MEMOIZE_KEY_PREFIX
-): CacheStorage<any, unknown> => {
+): Required<CacheStorage<any, unknown>> => {
   return {
     has: async (key) => {
       const exists = await redis.exists(buildRedisMemoizeKey(keyPrefix, key));

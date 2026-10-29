@@ -1,5 +1,7 @@
 # `@taleland/nestjs-auth0`
 
+Requires Node.js 22 or newer.
+
 NestJS Auth0 module for the Auth0 SDK.
 
 It provides Auth0 clients for NestJS, plus request throttling and optional memoization with in-memory or Redis-backed storage.
