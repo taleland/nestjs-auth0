@@ -1,3 +1,21 @@
+## [4.0.0](https://github.com/taleland/nestjs-auth0/compare/v3.0.0...v4.0.0) (2026-10-29)
+
+### ⚠ BREAKING CHANGES
+
+* upgrade p-memoize and require Node.js 22 (#64)
+
+### Features
+
+* support NestJS 12 with aligned development dependencies ([#69](https://github.com/taleland/nestjs-auth0/issues/69)) ([c2b66ad](https://github.com/taleland/nestjs-auth0/commit/c2b66ad3ab7e8c9763d8d5485091804c97d249c6))
+
+### Bug Fixes
+
+* align NestJS common and release tooling dependencies ([#63](https://github.com/taleland/nestjs-auth0/issues/63)) ([e91a0f2](https://github.com/taleland/nestjs-auth0/commit/e91a0f22fd69cd235825a9bdb589ff3d42c01417))
+
+### Build System
+
+* upgrade p-memoize and require Node.js 22 ([#64](https://github.com/taleland/nestjs-auth0/issues/64)) ([f29dbca](https://github.com/taleland/nestjs-auth0/commit/f29dbca82bc9c1d9611bfcb8ff8b9435ce2cac88))
+
 ## [3.0.0](https://github.com/taleland/nestjs-auth0/compare/v2.0.0...v3.0.0) (2026-10-27)
 
 ### ⚠ BREAKING CHANGES
